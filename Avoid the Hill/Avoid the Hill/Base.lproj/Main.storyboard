@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Avoid_the_Hill" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avoid the Hill" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCH-O9-DZi">
+                                <rect key="frame" x="20" y="40" width="335" height="26"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No one likes climbing hills or trying not to slip while going down, so why don't you find the flattest route?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZJz-tm-Xva">
+                                <rect key="frame" x="30" y="86" width="315" height="61"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="0.21473273209999999" green="0.59292559980000004" blue="0.0" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Final Destination" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aSZ-dG-YPx">
+                                <rect key="frame" x="105" y="167" width="166" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tWv-oL-Kxy">
+                                <rect key="frame" x="136" y="217" width="102" height="30"/>
+                                <color key="backgroundColor" red="0.21473273209999999" green="0.52144665020000003" blue="0.0" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Take me there!"/>
+                                <connections>
+                                    <action selector="navigatiorButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="y62-HY-DpB"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tnm-T5-sCN" customClass="GMSMapView">
+                                <rect key="frame" x="30" y="287" width="315" height="340"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.027575398840000001" green="0.77317615846944454" blue="0.89537795490000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="ZJz-tm-Xva" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="30" id="Dgh-lg-0Ut"/>
+                            <constraint firstItem="aSZ-dG-YPx" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ega-dx-F3T"/>
+                            <constraint firstItem="tWv-oL-Kxy" firstAttribute="top" secondItem="aSZ-dG-YPx" secondAttribute="bottom" constant="20" id="HFj-cu-LWO"/>
+                            <constraint firstItem="vCH-O9-DZi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="INF-0W-Dfm"/>
+                            <constraint firstItem="aSZ-dG-YPx" firstAttribute="top" secondItem="ZJz-tm-Xva" secondAttribute="bottom" constant="20" id="LQV-mX-pfO"/>
+                            <constraint firstItem="tWv-oL-Kxy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="NJo-RV-rDh"/>
+                            <constraint firstItem="Tnm-T5-sCN" firstAttribute="top" secondItem="tWv-oL-Kxy" secondAttribute="bottom" constant="40" id="OR2-1U-98L"/>
+                            <constraint firstItem="vCH-O9-DZi" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="WDR-5c-vU7"/>
+                            <constraint firstItem="Tnm-T5-sCN" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="30" id="cWF-6U-XUp"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Tnm-T5-sCN" secondAttribute="bottom" constant="40" id="iu0-gu-hyE"/>
+                            <constraint firstAttribute="trailing" secondItem="vCH-O9-DZi" secondAttribute="trailing" constant="20" id="jCE-34-SoQ"/>
+                            <constraint firstAttribute="trailing" secondItem="Tnm-T5-sCN" secondAttribute="trailing" constant="30" id="n5f-F6-67m"/>
+                            <constraint firstItem="ZJz-tm-Xva" firstAttribute="top" secondItem="vCH-O9-DZi" secondAttribute="bottom" constant="20" id="pGT-Ls-TI6"/>
+                            <constraint firstAttribute="trailing" secondItem="ZJz-tm-Xva" secondAttribute="trailing" constant="30" id="y0n-iW-Q0m"/>
+                            <constraint firstItem="ZJz-tm-Xva" firstAttribute="top" secondItem="vCH-O9-DZi" secondAttribute="bottom" constant="20" id="yxh-8m-jzs"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="finalDestinationTextField" destination="aSZ-dG-YPx" id="Vfw-qV-fYN"/>
+                        <outlet property="myMapView" destination="Tnm-T5-sCN" id="znu-yg-Kqw"/>
+                        <outlet property="navigatorButton" destination="tWv-oL-Kxy" id="3oJ-TX-sGD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-79.200000000000003" y="138.98050974512745"/>
+        </scene>
+    </scenes>
+</document>
