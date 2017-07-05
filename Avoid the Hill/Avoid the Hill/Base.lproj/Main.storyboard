@@ -33,14 +33,8 @@
                                 <color key="textColor" red="0.21473273209999999" green="0.59292559980000004" blue="0.0" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Final Destination" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aSZ-dG-YPx">
-                                <rect key="frame" x="105" y="167" width="166" height="30"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tWv-oL-Kxy">
-                                <rect key="frame" x="136" y="217" width="102" height="30"/>
+                                <rect key="frame" x="136" y="231" width="102" height="30"/>
                                 <color key="backgroundColor" red="0.21473273209999999" green="0.52144665020000003" blue="0.0" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="Take me there!"/>
@@ -49,17 +43,24 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tnm-T5-sCN" customClass="GMSMapView">
-                                <rect key="frame" x="30" y="287" width="315" height="340"/>
+                                <rect key="frame" x="30" y="301" width="315" height="326"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S5I-w2-mBM">
+                                <rect key="frame" x="139" y="178" width="97" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="97" id="czn-5K-UOo"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.027575398840000001" green="0.77317615846944454" blue="0.89537795490000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
+                            <constraint firstItem="S5I-w2-mBM" firstAttribute="top" secondItem="ZJz-tm-Xva" secondAttribute="bottom" constant="31" id="9LA-I3-PdW"/>
                             <constraint firstItem="ZJz-tm-Xva" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="30" id="Dgh-lg-0Ut"/>
-                            <constraint firstItem="aSZ-dG-YPx" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ega-dx-F3T"/>
-                            <constraint firstItem="tWv-oL-Kxy" firstAttribute="top" secondItem="aSZ-dG-YPx" secondAttribute="bottom" constant="20" id="HFj-cu-LWO"/>
                             <constraint firstItem="vCH-O9-DZi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="INF-0W-Dfm"/>
-                            <constraint firstItem="aSZ-dG-YPx" firstAttribute="top" secondItem="ZJz-tm-Xva" secondAttribute="bottom" constant="20" id="LQV-mX-pfO"/>
                             <constraint firstItem="tWv-oL-Kxy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="NJo-RV-rDh"/>
                             <constraint firstItem="Tnm-T5-sCN" firstAttribute="top" secondItem="tWv-oL-Kxy" secondAttribute="bottom" constant="40" id="OR2-1U-98L"/>
                             <constraint firstItem="vCH-O9-DZi" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="WDR-5c-vU7"/>
@@ -67,18 +68,29 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Tnm-T5-sCN" secondAttribute="bottom" constant="40" id="iu0-gu-hyE"/>
                             <constraint firstAttribute="trailing" secondItem="vCH-O9-DZi" secondAttribute="trailing" constant="20" id="jCE-34-SoQ"/>
                             <constraint firstAttribute="trailing" secondItem="Tnm-T5-sCN" secondAttribute="trailing" constant="30" id="n5f-F6-67m"/>
+                            <constraint firstItem="S5I-w2-mBM" firstAttribute="centerX" secondItem="tWv-oL-Kxy" secondAttribute="centerX" id="oqe-og-vUe"/>
                             <constraint firstItem="ZJz-tm-Xva" firstAttribute="top" secondItem="vCH-O9-DZi" secondAttribute="bottom" constant="20" id="pGT-Ls-TI6"/>
                             <constraint firstAttribute="trailing" secondItem="ZJz-tm-Xva" secondAttribute="trailing" constant="30" id="y0n-iW-Q0m"/>
                             <constraint firstItem="ZJz-tm-Xva" firstAttribute="top" secondItem="vCH-O9-DZi" secondAttribute="bottom" constant="20" id="yxh-8m-jzs"/>
+                            <constraint firstItem="tWv-oL-Kxy" firstAttribute="top" secondItem="S5I-w2-mBM" secondAttribute="bottom" constant="23" id="za5-SJ-s2p"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="finalDestinationTextField" destination="aSZ-dG-YPx" id="Vfw-qV-fYN"/>
+                        <outlet property="finalDestinationTextField" destination="S5I-w2-mBM" id="Sy1-XM-nc3"/>
                         <outlet property="myMapView" destination="Tnm-T5-sCN" id="znu-yg-Kqw"/>
                         <outlet property="navigatorButton" destination="tWv-oL-Kxy" id="3oJ-TX-sGD"/>
+                        <outlet property="searchDisplayController" destination="tfT-J0-It6" id="ABF-i8-cEr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="tfT-J0-It6">
+                    <connections>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="b62-78-uA5"/>
+                        <outlet property="searchContentsController" destination="BYZ-38-t0r" id="g1m-0R-xon"/>
+                        <outlet property="searchResultsDataSource" destination="BYZ-38-t0r" id="zN9-UV-Cq2"/>
+                        <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="Fg1-vA-xhH"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="-79.200000000000003" y="138.98050974512745"/>
         </scene>

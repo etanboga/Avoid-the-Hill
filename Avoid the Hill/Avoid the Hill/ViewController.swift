@@ -36,30 +36,53 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         navigatorButton.layer.cornerRadius = CGFloat(CORNERRADIUS)
         
         manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.desiredAccuracy = kCLLocationAccuracyBest       //This part works for the phone because we have internal location services installed. It does not work on the simulator since we do not have access to the location while launching the app and then get the authorization to change our location
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
-        let myLongitude = manager.location!.coordinate.longitude
-        let myLatitude = manager.location!.coordinate.latitude
-        //print("\(myLatitude)       \(myLongitude)")
-        let camera = GMSCameraPosition.camera(withLatitude: myLatitude, longitude: myLongitude, zoom: 10)
-        myMapView.camera = camera
-        //myMapView = GMSMapView.map(withFrame: CGRect(x: 0, y: 0, width: myMapView.frame.width, height: myMapView.frame.height), camera: camera)
-//        mapView = GMSMapView.map(withFrame: CGRect(x: 0, y: 0, width: myMapView.frame.width, height: myMapView.frame.height), camera: camera)
-        let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
-        
-        //self.view.addSubview(mapView!)
-       //self.myMapView.addSubview(mapView!)
-     //  myMapView = mapView
-        
-        myMapView.isMyLocationEnabled = true
-        startingLocation = currentLocation
+        if let location = manager.location {
+        let myLongitude = location.coordinate.longitude
+        let myLatitude = location.coordinate.latitude
+            let camera = GMSCameraPosition.camera(withLatitude: myLatitude, longitude: myLongitude, zoom: 10)
+            myMapView.camera = camera
+            let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
+            myMapView.isMyLocationEnabled = true
+            startingLocation = currentLocation
+        }
         
         myMapView.settings.myLocationButton = true
         
         let tapGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print(manager.location ?? "no location")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        //this works for both cases however for the phone, the same location is set twice. Since after launching the app in simulator, we ask for authorization, this should change everything properly.
+        if status == .authorizedWhenInUse {
+
+            if let location = manager.location {
+                let myLongitude = location.coordinate.longitude
+                let myLatitude = location.coordinate.latitude
+                let camera = GMSCameraPosition.camera(withLatitude: myLatitude, longitude: myLongitude, zoom: 10)
+                myMapView.camera = camera
+                let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
+                myMapView.isMyLocationEnabled = true
+                startingLocation = currentLocation
+            }
+            
+            manager.startUpdatingLocation()
+            self.myMapView.isMyLocationEnabled = true
+            myMapView.settings.myLocationButton = true
+            
+        }
+        
+        if status == .denied {
+            manager.requestWhenInUseAuthorization()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,5 +100,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func dismissKeyboard(){
         self.view.endEditing(true)
     }
+    
 }
 
