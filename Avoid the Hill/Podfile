@@ -1,9 +1,12 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '10.0'
 use_frameworks!
 
 target 'Avoid the Hill' do
 pod 'GoogleMaps'
 pod 'GooglePlaces'
-pod 'Alamofire', '~> 4.4'
+pod 'GooglePlacesAPI'
+pod 'SwiftyJSON', :git => 'https://github.com/IBM-Swift/SwiftyJSON.git'
+pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git'
+pod 'AlamofireImage', :git => 'https://github.com/Alamofire/AlamofireImage.git'
+pod 'AlamofireNetworkActivityIndicator', :git => 'https://github.com/Alamofire/AlamofireNetworkActivityIndicator.git'
 end

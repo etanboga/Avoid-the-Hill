@@ -1,5 +1,9 @@
 PODS:
   - Alamofire (4.5.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - AlamofireNetworkActivityIndicator (2.2.0):
+    - Alamofire (~> 4.5)
   - GoogleMaps (2.3.1):
     - GoogleMaps/Maps (= 2.3.1)
   - GoogleMaps/Base (2.3.1)
@@ -7,17 +11,55 @@ PODS:
     - GoogleMaps/Base
   - GooglePlaces (2.3.1):
     - GoogleMaps/Base (= 2.3.1)
+  - GooglePlacesAPI (1.1.3):
+    - Alamofire (~> 4)
+    - ObjectMapper (~> 2)
+  - ObjectMapper (2.2.7)
+  - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.4)
+  - Alamofire (from `https://github.com/Alamofire/Alamofire.git`)
+  - AlamofireImage (from `https://github.com/Alamofire/AlamofireImage.git`)
+  - AlamofireNetworkActivityIndicator (from `https://github.com/Alamofire/AlamofireNetworkActivityIndicator.git`)
   - GoogleMaps
   - GooglePlaces
+  - GooglePlacesAPI
+  - SwiftyJSON (from `https://github.com/IBM-Swift/SwiftyJSON.git`)
+
+EXTERNAL SOURCES:
+  Alamofire:
+    :git: https://github.com/Alamofire/Alamofire.git
+  AlamofireImage:
+    :git: https://github.com/Alamofire/AlamofireImage.git
+  AlamofireNetworkActivityIndicator:
+    :git: https://github.com/Alamofire/AlamofireNetworkActivityIndicator.git
+  SwiftyJSON:
+    :git: https://github.com/IBM-Swift/SwiftyJSON.git
+
+CHECKOUT OPTIONS:
+  Alamofire:
+    :commit: 9234355894206a43c2d3b1b0e4feb7be4385f5dd
+    :git: https://github.com/Alamofire/Alamofire.git
+  AlamofireImage:
+    :commit: de5944b41d7c94fe6830b8113d33f51db2ae0737
+    :git: https://github.com/Alamofire/AlamofireImage.git
+  AlamofireNetworkActivityIndicator:
+    :commit: da5fe47a66e05e9c3b18e2e2997b6edd60aa0c53
+    :git: https://github.com/Alamofire/AlamofireNetworkActivityIndicator.git
+  SwiftyJSON:
+    :commit: 4c57d4680e2b3d7be0e7c36737f99b6b36f09aac
+    :git: https://github.com/IBM-Swift/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Alamofire: 2983f0804e7566e66b937f5e7ef4aeba7b910426
+  AlamofireImage: 0ff319da83d6abb78a661d7296e742e7f65e15f5
+  AlamofireNetworkActivityIndicator: 1b37f625e82da75465fc624bf26cf37cabd99a42
   GoogleMaps: c66a71058b9b1294bcdd5463a68e357fa50c079f
   GooglePlaces: 4a7b22debfa1af65017b82943431822607e45201
+  GooglePlacesAPI: 3baf1c78cf94cc97fc5677c613f55d00b37a7d3c
+  ObjectMapper: 65abcfd9a61cf7396cbd14a4fb22fddfcc46577e
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
-PODFILE CHECKSUM: 0856bc39cda1bf74853f4b0ec4608c678f10fc8a
+PODFILE CHECKSUM: 98add39764362f4319be669659cb2f36b665061c
 
 COCOAPODS: 1.2.1
