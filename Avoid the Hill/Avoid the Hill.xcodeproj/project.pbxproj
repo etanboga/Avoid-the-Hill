@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12CB6B57D634A860C6E36D85 /* Pods_Avoid_the_Hill.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87FF078262C18D6AF5DBE551 /* Pods_Avoid_the_Hill.framework */; };
 		716A30AC1F0BFFB100F045D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716A30AB1F0BFFB100F045D5 /* AppDelegate.swift */; };
 		716A30AE1F0BFFB100F045D5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716A30AD1F0BFFB100F045D5 /* ViewController.swift */; };
 		716A30B11F0BFFB100F045D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 716A30AF1F0BFFB100F045D5 /* Main.storyboard */; };
@@ -14,11 +15,9 @@
 		716A30B61F0BFFB100F045D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 716A30B41F0BFFB100F045D5 /* LaunchScreen.storyboard */; };
 		716A30C11F0C11D800F045D5 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 716A30C01F0C11D800F045D5 /* Podfile */; };
 		716A30C21F0C20D100F045D5 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716A30BE1F0C058900F045D5 /* CoreLocation.framework */; };
-		96F2FDE031FF79C75CA24413 /* libPods-Avoid the Hill.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 197B559C1BC8CB9EA7D5388C /* libPods-Avoid the Hill.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		197B559C1BC8CB9EA7D5388C /* libPods-Avoid the Hill.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Avoid the Hill.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		567FB848F1448254F6DAE65B /* Pods-Avoid the Hill.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avoid the Hill.release.xcconfig"; path = "Pods/Target Support Files/Pods-Avoid the Hill/Pods-Avoid the Hill.release.xcconfig"; sourceTree = "<group>"; };
 		716A30A81F0BFFB100F045D5 /* Avoid the Hill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Avoid the Hill.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		716A30AB1F0BFFB100F045D5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -28,7 +27,8 @@
 		716A30B51F0BFFB100F045D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		716A30B71F0BFFB100F045D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		716A30BE1F0C058900F045D5 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		716A30C01F0C11D800F045D5 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		716A30C01F0C11D800F045D5 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		87FF078262C18D6AF5DBE551 /* Pods_Avoid_the_Hill.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avoid_the_Hill.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F458ED222F6A01EFB74F001C /* Pods-Avoid the Hill.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avoid the Hill.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avoid the Hill/Pods-Avoid the Hill.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -38,7 +38,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				716A30C21F0C20D100F045D5 /* CoreLocation.framework in Frameworks */,
-				96F2FDE031FF79C75CA24413 /* libPods-Avoid the Hill.a in Frameworks */,
+				12CB6B57D634A860C6E36D85 /* Pods_Avoid_the_Hill.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				716A30BE1F0C058900F045D5 /* CoreLocation.framework */,
-				197B559C1BC8CB9EA7D5388C /* libPods-Avoid the Hill.a */,
+				87FF078262C18D6AF5DBE551 /* Pods_Avoid_the_Hill.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

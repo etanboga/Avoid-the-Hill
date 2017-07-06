@@ -1,0 +1,6 @@
+framework module Pods_Avoid_the_Hill {
+  umbrella header "Pods-Avoid the Hill-umbrella.h"
+
+  export *
+  module * { export * }
+}

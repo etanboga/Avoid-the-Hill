@@ -32,6 +32,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBOutlet weak var myMapTopConstraint: NSLayoutConstraint!
     
+//    var firstTap = true
+    
     let manager = CLLocationManager()
     var startingLocation : CLLocationCoordinate2D? = nil
     var endingLocation : CLLocationCoordinate2D? = nil
@@ -40,6 +42,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         
         chooseDestinationButton.layer.cornerRadius = CGFloat(CHOOSEDESTINATIONRADIUS)
         navigatorButton.layer.cornerRadius = CGFloat(NAVIGATORRADIUS)
@@ -111,9 +115,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     //MARK: - IBActions
     
     @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {
+        
+//        firstTap = false
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self as GMSAutocompleteViewControllerDelegate
-        present(autocompleteController, animated: true, completion: nil)
+        present(autocompleteController, animated: true) { 
+        }
+//        present(autocompleteController, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func navigatorButtonTapped(_ sender: UIButton) {
+        
+        //IMPLEMENT ALGORITHM HERE
+        let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=transit&key=AIzaSyD70OJ3E4ATvU9KflXdOEPj4W9fTsTaXRs")!
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if error != nil {
+                print("ERROR")
+            }
+            else {
+                if let content = data {
+                    do {
+                        let myJson = try JSONSerialization.jsonObject(with: content, options: .mutableContainers) as AnyObject
+                        print(myJson)
+                        
+                    }
+                    catch {
+                    }
+                }
+            }
+        
+        }
+        task.resume()
+    
     }
     
     //MARK: - Functions
@@ -147,12 +181,10 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
         
         //delete the choosedestination button
         
-        chooseDestinationButton.isHidden = true
-        chooseDestinationButton.isUserInteractionEnabled = false
+        //chooseDestinationButton.isHidden = true
         
-        //move the map up
+       // chooseDestinationButton.isUserInteractionEnabled = false
         
-        myMapTopConstraint.constant = 0
         
         //show button
         
@@ -160,7 +192,12 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
         navigatorButton.isUserInteractionEnabled = true
         navigatorButton.isHidden = false
         
+        self.chooseDestinationButton.setTitle("Choose Another Destination", for: .normal)
+        self.chooseDestinationButton.titleLabel?.adjustsFontSizeToFitWidth = true
+
+
         dismiss(animated: true, completion: nil)
+        
         
     }
     
@@ -176,6 +213,8 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
     
     // Turn the network activity indicator on and off again.
     func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        
+
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
     }
     
