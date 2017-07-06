@@ -22,7 +22,6 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tnm-T5-sCN" customClass="GMSMapView">
-                                <rect key="frame" x="0.0" y="120" width="320" height="547"/>
                                 <rect key="frame" x="0.0" y="20" width="320" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
