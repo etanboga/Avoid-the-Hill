@@ -17,7 +17,8 @@ import GooglePlaces
 
 
 
-let CORNERRADIUS = 4
+let CHOOSEDESTINATIONRADIUS = 4
+let NAVIGATORRADIUS = 10
 
 class ViewController: UIViewController, CLLocationManagerDelegate  {
     
@@ -26,23 +27,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var chooseDestinationButton: UIButton!
     @IBOutlet weak var myMapView: GMSMapView!
     
+    @IBOutlet weak var navigatorButton: UIButton!
+    
+    
+    @IBOutlet weak var myMapTopConstraint: NSLayoutConstraint!
+    
     let manager = CLLocationManager()
     var startingLocation : CLLocationCoordinate2D? = nil
     var endingLocation : CLLocationCoordinate2D? = nil
-    //var resultsViewController : GMSAutocompleteResultsViewController?
-    //var searchController : UISearchController?
-    //var resultView: UITextView?
-
-
-    
     
     //MARK: - VC Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        chooseDestinationButton.layer.cornerRadius = CGFloat(CORNERRADIUS)
-        
+        chooseDestinationButton.layer.cornerRadius = CGFloat(CHOOSEDESTINATIONRADIUS)
+        navigatorButton.layer.cornerRadius = CGFloat(NAVIGATORRADIUS)
+        navigatorButton.isHidden = true
+        navigatorButton.isUserInteractionEnabled = false
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest       //This part works for the phone because we have internal location services installed. It does not work on the simulator since we do not have access to the location while launching the app and then get the authorization to change our location
         manager.requestWhenInUseAuthorization()
@@ -61,6 +63,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         }
         
         myMapView.settings.myLocationButton = true
+        myMapView.settings.allowScrollGesturesDuringRotateOrZoom = true
+        myMapView.settings.zoomGestures = true
         
         //End of configuration of current location
         
@@ -69,38 +73,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         let tapGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
-        //Search autocomplete part
-        
-//        resultsViewController = GMSAutocompleteResultsViewController()
-//        resultsViewController?.delegate = self
-//        
-//        searchController = UISearchController(searchResultsController: resultsViewController)
-//        searchController?.searchResultsUpdater = resultsViewController
-//        
-//        let frameWidth: CGFloat  = 300.0
-//        let frameHeight: CGFloat  = 45.0
-//        let xbound: CGFloat = (view.bounds.width / 2) - (frameWidth / 2)
-//        let ybound: CGFloat = (view.bounds.height / 2) - (view.bounds.height/8)     //works on phone
-//        
-//        let subView = UIView(frame: CGRect(x: xbound, y: ybound, width: frameWidth, height: frameHeight))
-//        
-//        subView.addSubview((searchController?.searchBar)!)
-//        view.addSubview(subView)
-//        searchController?.searchBar.sizeToFit()
-//        searchController?.hidesNavigationBarDuringPresentation = false
-//        
-//        searchController?.searchBar.placeholder = "Enter Final Destination"
-//        
-//        // When UISearchController presents the results view, present it in
-//        // this view controller, not one further up the chain.
-//        definesPresentationContext = true
-        
         
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //print(manager.location ?? "no location")
-    }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         //this works for both cases however for the phone, the same location is set twice. Since after launching the app in simulator, we ask for authorization, this should change everything properly.
@@ -149,51 +124,42 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
 }
 
-//extension ViewController: GMSAutocompleteResultsViewControllerDelegate {
-//    func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
-//                           didAutocompleteWith place: GMSPlace) {
-//        searchController?.isActive = false
-//        // Do something with the selected place.
-////        print("Place name: \(place.name)")
-////        print("Place address: \(String(describing: place.formattedAddress))")
-////        print("Place attributions: \(String(describing: place.attributions))")
-//        let finalDestination = CLLocationCoordinate2DMake(place.coordinate.latitude, place.coordinate.longitude)
-//        self.endingLocation = finalDestination
-//        print("Information about ending location: \(endingLocation?.latitude ?? 0)  \(endingLocation?.longitude ?? 0)")
-//    }
-//    
-//    func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
-//                           didFailAutocompleteWithError error: Error){
-//        // TODO: handle the error.
-//        print("Error: ", error.localizedDescription)
-//    }
-//    
-//    // Turn the network activity indicator on and off again.
-//    func didRequestAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-//    }
-//    
-//    func didUpdateAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-//    }
-//    
-//}
 
 extension ViewController: GMSAutocompleteViewControllerDelegate {
     
-    // Handle the user's selection.
+    // Handle the user's selection, can add button from here
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        //print("Place name: \(place.name)")
-        //print("Place address: \(place.formattedAddress)")
-        //print("Place attributions: \(place.attributions)")
+
         let finalDestination = CLLocationCoordinate2DMake(place.coordinate.latitude, place.coordinate.longitude)
         self.endingLocation = finalDestination
+        
+        //set location to ending location
+        
         let camera = GMSCameraPosition.camera(withLatitude: (self.endingLocation?.latitude)!, longitude: (self.endingLocation?.longitude)!, zoom: 15)
         myMapView.camera = camera
+        
+        //put a marker to that location
+        
         let marker = GMSMarker(position: endingLocation!)
         marker.title = place.name
         marker.snippet = place.formattedAddress
         marker.map = myMapView
+        
+        //delete the choosedestination button
+        
+        chooseDestinationButton.isHidden = true
+        chooseDestinationButton.isUserInteractionEnabled = false
+        
+        //move the map up
+        
+        myMapTopConstraint.constant = 0
+        
+        //show button
+        
+        
+        navigatorButton.isUserInteractionEnabled = true
+        navigatorButton.isHidden = false
+        
         dismiss(animated: true, completion: nil)
         
     }

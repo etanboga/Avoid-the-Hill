@@ -40,22 +40,38 @@
                                     <action selector="finalDestinationButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Ct-R0-gfO"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jjv-DV-B9b">
+                                <rect key="frame" x="75" y="588" width="170" height="79"/>
+                                <color key="backgroundColor" red="0.18673354989999999" green="0.73604060910000002" blue="0.31892119499999999" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="170" id="4OI-az-BQ6"/>
+                                    <constraint firstAttribute="height" constant="79" id="yBf-uO-4UF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="23"/>
+                                <state key="normal" title="Take me There!">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.48776903003096861" green="0.7688709752045686" blue="0.66973824562302786" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Tnm-T5-sCN" secondAttribute="trailing" id="2ou-lk-2lG"/>
-                            <constraint firstItem="Tnm-T5-sCN" firstAttribute="top" secondItem="r3u-wa-iaU" secondAttribute="bottom" constant="23" id="5B6-Sq-eNO"/>
+                            <constraint firstItem="Jjv-DV-B9b" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="8cd-0a-Mzp"/>
                             <constraint firstItem="r3u-wa-iaU" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="17" id="Wbl-o7-FYC"/>
                             <constraint firstItem="Tnm-T5-sCN" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="c6e-g9-8dq"/>
                             <constraint firstItem="Tnm-T5-sCN" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="fZ0-e2-bf4"/>
                             <constraint firstItem="r3u-wa-iaU" firstAttribute="centerX" secondItem="Tnm-T5-sCN" secondAttribute="centerX" id="lFy-mx-wrg"/>
                             <constraint firstItem="r3u-wa-iaU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="46" id="pue-3Q-jkV"/>
+                            <constraint firstItem="Jjv-DV-B9b" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="sdo-w2-nBI"/>
+                            <constraint firstItem="Tnm-T5-sCN" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="100" id="suY-8R-33F"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="9im-WD-wTA"/>
                     <connections>
                         <outlet property="chooseDestinationButton" destination="r3u-wa-iaU" id="IrA-WT-cre"/>
+                        <outlet property="myMapTopConstraint" destination="suY-8R-33F" id="W38-pe-x8m"/>
                         <outlet property="myMapView" destination="Tnm-T5-sCN" id="znu-yg-Kqw"/>
+                        <outlet property="navigatorButton" destination="Jjv-DV-B9b" id="0yL-tt-Yti"/>
                         <outlet property="searchDisplayController" destination="tfT-J0-It6" id="ABF-i8-cEr"/>
                     </connections>
                 </viewController>
