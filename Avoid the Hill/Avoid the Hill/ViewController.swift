@@ -35,11 +35,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBOutlet weak var myMapTopConstraint: NSLayoutConstraint!
     
-//    var firstTap = true
     
     let manager = CLLocationManager()
     var startingLocation : CLLocationCoordinate2D? = nil
     var endingLocation : CLLocationCoordinate2D? = nil
+    
+    var finalPlace: GMSPlace? = nil
     
     //MARK: - VC Lifecycle
     
@@ -66,7 +67,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             
             myMapView.isMyLocationEnabled = true
             startingLocation = currentLocation
-            print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
+            //print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
         }
         
         myMapView.settings.myLocationButton = true
@@ -105,7 +106,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
                 myMapView.isMyLocationEnabled = true
                 startingLocation = currentLocation
-                print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
+                //print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
             }
             
             manager.startUpdatingLocation()
@@ -137,10 +138,87 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBAction func navigatorButtonTapped(_ sender: UIButton) {
         
+        //initiating the navigation
+        
         self.myMapView.clear()
         
+        let calculationStartLocation = startingLocation!
+        let calculationEndLocation = endingLocation!
+        let origin = "\(calculationStartLocation.latitude),\(calculationStartLocation.longitude)"
+        let destination = "\(calculationEndLocation.latitude),\(calculationEndLocation.longitude)"
+        
+        
+        let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(origin)&destination=\(destination)&mode=walking&alternatives=true&key=AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE"
+        
+        Alamofire.request(url).responseJSON { response in
+            
+            let json = JSON(data: response.data!)
+            //print(json)
+            let routes = json["routes"].arrayValue
+            
+            let averageAngles = [Double] ()
+            
+                for index in 0..<routes.count {
+                    
+                    //print("for route \(index)")
+                    
+                    var angleValues = [Double] ()
+                    var weights = [Double] ()
+                    var totalDistance = 0
+                    let legs = routes[index]["legs"]
+                    for secondindex in 0..<legs.count {
+                        let steps = legs[secondindex]["steps"]
+                        //print(steps)
+                        for thirdindex in 0..<steps.count {
+                            //print("for step \(thirdindex)        ")
+                            
+                            let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
+                            let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
+                            let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
+                            let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
+                            let distance  = steps[thirdindex]["distance"]["value"].doubleValue
+                            print(distance)
+//                            print(startLatitude)
+//                            print(startLongitude)
+//                            print(endLatitude)
+//                            print(endLongitude)
+//                            print("         ")
+                            let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
+                            let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
+                            let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
+                            totalDistance += distance
+                            angleValues.append(elevationAngle)
+                            weights.append(distance)
+                            
+                        }
+                    }
+                    weights.map {$0 / totalDistance}
+                    print(weights) //check if division is complete
+                    let averageAngle = self.calculateAverageAngle(angleValues,weights)
+                    averageAngles.append(averageAngle)
+            }
+            let minimumAngle  = averageAngles.min()
+            let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+            //now we need to draw the route at the same index
+        }
+        
+        
+        
         //drawPath(startLocation: startingLocation!, endLocation: endingLocation!)
+        
+        //main navigation part
+        
+        
+        
+        //completing navigation formatting
+        
+        
         myMapView.animate(toLocation: endingLocation!)
+        let marker = GMSMarker(position: endingLocation!)
+        marker.title = finalPlace?.name
+        marker.snippet = finalPlace?.formattedAddress
+        marker.map = myMapView
+
     
     }
     
@@ -154,40 +232,54 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     {
         //API Key: AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE
         
-        let origin = "\(startLocation.latitude),\(startLocation.longitude)"
-        let destination = "\(endLocation.latitude),\(endLocation.longitude)"
+//            for route in routes
+//            {
+//                let routeOverviewPolyline = route["overview_polyline"].dictionary
+//                let points = routeOverviewPolyline?["points"]?.stringValue
+//                let path = GMSPath.init(fromEncodedPath: points!)
+//                let polyline = GMSPolyline.init(path: path)
+//                polyline.strokeWidth = 10
+//                polyline.strokeColor = .random()
+//                polyline.map = self.myMapView
+//            }
+    }
+    
+    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double) -> Double {
         
+        //APIKEY AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg
         
-        let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(origin)&destination=\(destination)&mode=walking&alternatives=true&key=AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE"
-        
-        Alamofire.request(url).responseJSON { response in
+        let origin = "\(segmentStart.latitude),\(segmentStart.longitude)"
+        let destination = "\(segmentEnd.latitude),\(segmentEnd.longitude)"
+        let myurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=39.7391536,-104.9847034|36.455556,-116.866667&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
+        Alamofire.request(myurl).responseJSON { response in
             
-            print(response.request as Any)  // original URL request
-            print(response.response as Any) // HTTP URL response
-            print(response.data as Any)     // server data
-            print(response.result as Any)   // result of response serialization
+                        print(response.request as Any)  // original URL request
+                        print(response.response as Any) // HTTP URL response
+                        print(response.data as Any)     // server data
+                        print(response.result as Any)   // result of response serialization
             
             let json = JSON(data: response.data!)
             print(json)
-            let routes = json["routes"].arrayValue
-            
-//            for route in routes {
-//            }
-//            
-            // print route using Polyline
-            for route in routes
-            {
-                let routeOverviewPolyline = route["overview_polyline"].dictionary
-                let points = routeOverviewPolyline?["points"]?.stringValue
-                let path = GMSPath.init(fromEncodedPath: points!)
-                let polyline = GMSPolyline.init(path: path)
-                polyline.strokeWidth = 10
-                polyline.strokeColor = .random()
-                polyline.map = self.myMapView
-            }
-            
+            let originElevation = json["results"][0]["elevation"].doubleValue
+            let destinationElevation = json["results"][1]["elevation"].doubleValue
+            print(originElevation)
+            print(destinationElevation)
+            print("I will work")
+            let elevationDifference = abs(destinationElevation-originElevation)
+            let angle = acos(elevationDifference/distance)
+            return angle
         }
+        
     }
+    
+}
+
+func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double {
+    let average: Double = 0
+    for index in 0..<angles.count {
+        average += angles[index]*weights[index]
+    }
+    return average
 }
 
 
@@ -206,9 +298,11 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
         
         //put a marker to that location
         
+        finalPlace = place
+        
         let marker = GMSMarker(position: endingLocation!)
-        marker.title = place.name
-        marker.snippet = place.formattedAddress
+        marker.title = finalPlace?.name
+        marker.snippet = finalPlace?.formattedAddress
         marker.map = myMapView
         
         //delete the choosedestination button
