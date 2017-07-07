@@ -156,7 +156,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             //print(json)
             let routes = json["routes"].arrayValue
             
-            let averageAngles = [Double] ()
+            var averageAngles = [Double] ()
             
                 for index in 0..<routes.count {
                     
@@ -164,7 +164,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                     
                     var angleValues = [Double] ()
                     var weights = [Double] ()
-                    var totalDistance = 0
+                    var totalDistance = 0.0
                     let legs = routes[index]["legs"]
                     for secondindex in 0..<legs.count {
                         let steps = legs[secondindex]["steps"]
@@ -185,31 +185,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
 //                            print("         ")
                             let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
                             let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
-                            let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
-                            totalDistance += distance
-                            angleValues.append(elevationAngle)
-                            weights.append(distance)
+                            //let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
                             
+                            self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (elevationAngle) in
+                                totalDistance += (distance)
+                                angleValues.append(elevationAngle)
+                                weights.append(distance)
+                            })
                         }
                     }
-                    weights.map {$0 / totalDistance}
+                    //weights.map {$0 / totalDistance}
                     print(weights) //check if division is complete
-                    let averageAngle = self.calculateAverageAngle(angleValues,weights)
+                    let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
                     averageAngles.append(averageAngle)
             }
             let minimumAngle  = averageAngles.min()
-            let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+            let indexOfMinimumAngle = averageAngles.index(of: minimumAngle!)
             //now we need to draw the route at the same index
+            self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
         }
-        
-        
-        
-        //drawPath(startLocation: startingLocation!, endLocation: endingLocation!)
-        
-        //main navigation part
-        
-        
-        
+
         //completing navigation formatting
         
         
@@ -228,59 +223,64 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         self.view.endEditing(true)
     }
     
-    func drawPath(startLocation: CLLocationCoordinate2D, endLocation: CLLocationCoordinate2D)
+    func drawPath( routes: [JSON], minIndex: Int)
     {
-        //API Key: AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE
         
-//            for route in routes
-//            {
-//                let routeOverviewPolyline = route["overview_polyline"].dictionary
-//                let points = routeOverviewPolyline?["points"]?.stringValue
-//                let path = GMSPath.init(fromEncodedPath: points!)
-//                let polyline = GMSPolyline.init(path: path)
-//                polyline.strokeWidth = 10
-//                polyline.strokeColor = .random()
-//                polyline.map = self.myMapView
-//            }
+            for index in 0..<routes.count
+            {
+                let routeOverviewPolyline = routes[index]["overview_polyline"].dictionary
+                let points = routeOverviewPolyline?["points"]?.stringValue
+                let path = GMSPath.init(fromEncodedPath: points!)
+                let polyline = GMSPolyline.init(path: path)
+                if index == minIndex {
+                polyline.strokeWidth = 30
+                } else {
+                polyline.strokeWidth = 10
+                }
+                polyline.strokeColor = .random()
+                polyline.map = self.myMapView
+            }
     }
     
-    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double) -> Double {
+    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double, completion: @escaping (Double) -> Void) {
         
         //APIKEY AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg
         
         let origin = "\(segmentStart.latitude),\(segmentStart.longitude)"
         let destination = "\(segmentEnd.latitude),\(segmentEnd.longitude)"
-        let myurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=39.7391536,-104.9847034|36.455556,-116.866667&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
-        Alamofire.request(myurl).responseJSON { response in
-            
-                        print(response.request as Any)  // original URL request
-                        print(response.response as Any) // HTTP URL response
-                        print(response.data as Any)     // server data
-                        print(response.result as Any)   // result of response serialization
+        var originElevation = 0.0
+        var destinationElevation = 0.0
+        let myoriginurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(origin)&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
+        Alamofire.request(myoriginurl).responseJSON { response in
+    
+            let json = JSON(data: response.data!)
+            originElevation = json["results"][0]["elevation"].doubleValue
+            print(originElevation)
+        }
+        let mydestinationurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(destination)&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
+        Alamofire.request(mydestinationurl).responseJSON { response in
             
             let json = JSON(data: response.data!)
-            print(json)
-            let originElevation = json["results"][0]["elevation"].doubleValue
-            let destinationElevation = json["results"][1]["elevation"].doubleValue
-            print(originElevation)
+            destinationElevation = json["results"][0]["elevation"].doubleValue
             print(destinationElevation)
             print("I will work")
             let elevationDifference = abs(destinationElevation-originElevation)
             let angle = acos(elevationDifference/distance)
-            return angle
+            completion(angle)
         }
-        
+    }
+    
+    func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double {
+        var average: Double = 0
+        for index in 0..<angles.count {
+            average += angles[index]*weights[index]
+        }
+        return average
     }
     
 }
 
-func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double {
-    let average: Double = 0
-    for index in 0..<angles.count {
-        average += angles[index]*weights[index]
-    }
-    return average
-}
+
 
 
 extension ViewController: GMSAutocompleteViewControllerDelegate {
