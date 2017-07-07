@@ -57,6 +57,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         manager.desiredAccuracy = kCLLocationAccuracyBest       //This part works for the phone because we have internal location services installed. It does not work on the simulator since we do not have access to the location while launching the app and then get the authorization to change our location
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        
+        //get current location and show that location on the map
+        
         if let location = manager.location {
         let myLongitude = location.coordinate.longitude
         let myLatitude = location.coordinate.latitude
@@ -67,7 +70,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             
             myMapView.isMyLocationEnabled = true
             startingLocation = currentLocation
-            //print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
         }
         
         myMapView.settings.myLocationButton = true
@@ -85,6 +87,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        //if our current destination changes after we start the application, updates the current location
         if let location = manager.location {
             let myLongitude = location.coordinate.longitude
             let myLatitude = location.coordinate.latitude
@@ -127,7 +130,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
 
     //MARK: - IBActions
     
-    @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {
+    @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {   //leads to search bar
         
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self as GMSAutocompleteViewControllerDelegate
@@ -142,6 +145,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         
         self.myMapView.clear()
         
+        //gets starting and ending location for navigation
+        
         let calculationStartLocation = startingLocation!
         let calculationEndLocation = endingLocation!
         let origin = "\(calculationStartLocation.latitude),\(calculationStartLocation.longitude)"
@@ -153,68 +158,73 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         Alamofire.request(url).responseJSON { response in
             
             let json = JSON(data: response.data!)
-            //print(json)
+            
+            //gets different routes between current location and final destination
+            
             let routes = json["routes"].arrayValue
             
-            var averageAngles = [Double] ()
+            if routes.count == 0 {
+                self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
+            }
             
-                for index in 0..<routes.count {
+            var averageAngles = [Double] () //to store average angles corresponding to each route
+            
+                for index in 0..<routes.count {     //for each route given
                     
-                    //print("for route \(index)")
-                    
-                    var angleValues = [Double] ()
-                    var weights = [Double] ()
+                    var angleValues = [Double] ()   //records angle values of steps
+                    var weights = [Double] ()       //records weights of steps for weighted average
                     var totalDistance = 0.0
-                    let legs = routes[index]["legs"]
-                    for secondindex in 0..<legs.count {
-                        let steps = legs[secondindex]["steps"]
-                        //print(steps)
-                        for thirdindex in 0..<steps.count {
-                            //print("for step \(thirdindex)        ")
-                            
-                            let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
-                            let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
-                            let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
-                            let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
-                            let distance  = steps[thirdindex]["distance"]["value"].doubleValue
-                            print(distance)
-//                            print(startLatitude)
-//                            print(startLongitude)
-//                            print(endLatitude)
-//                            print(endLongitude)
-//                            print("         ")
-                            let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
-                            let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
-                            //let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
-                            
-                            self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (elevationAngle) in
+                    let legs = routes[index]["legs"]    //get different legs for the route
+                    
+                    for secondindex in 0..<legs.count {     //for each leg
+                        let steps = legs[secondindex]["steps"]  //get different steps
+                        
+                            for thirdindex in 0..<steps.count { //for each step
+                                
+                                //get start and end coordinates
+                                let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
+                                let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
+                                let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
+                                let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
+                                //get the distance between start and end in meters
+                                let distance  = steps[thirdindex]["distance"]["value"].doubleValue
+                                let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
+                                let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
+                                    //calculate the angle between the step and the sea level
+                                let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
                                 totalDistance += (distance)
                                 angleValues.append(elevationAngle)
                                 weights.append(distance)
-                            })
-                        }
+                                print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
+                            }
                     }
-                    //weights.map {$0 / totalDistance}
+                    weights = weights.map {$0 / totalDistance}
                     print(weights) //check if division is complete
+                    
+                    //calculate average angle for the route and add it to the average angle array
+                    
                     let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
                     averageAngles.append(averageAngle)
             }
-            let minimumAngle  = averageAngles.min()
-            let indexOfMinimumAngle = averageAngles.index(of: minimumAngle!)
-            //now we need to draw the route at the same index
-            self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
+            if let minimumAngle  = averageAngles.min() {
+                let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+                //now we need to draw the routes making the one with smalest angle the boldest
+                self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
+                //completing navigation formatting
+                self.myMapView.animate(toLocation: self.endingLocation!)
+                let marker = GMSMarker(position: self.endingLocation!)
+                marker.title = self.finalPlace?.name
+                marker.snippet = self.finalPlace?.formattedAddress
+                marker.map = self.myMapView
+
+            } else {
+                
+                self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
+            
+            }
+            
         }
-
-        //completing navigation formatting
         
-        
-        myMapView.animate(toLocation: endingLocation!)
-        let marker = GMSMarker(position: endingLocation!)
-        marker.title = finalPlace?.name
-        marker.snippet = finalPlace?.formattedAddress
-        marker.map = myMapView
-
-    
     }
     
     //MARK: - Functions
@@ -223,7 +233,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         self.view.endEditing(true)
     }
     
-    func drawPath( routes: [JSON], minIndex: Int)
+    func drawPath( routes: [JSON], minIndex: Int)   //draws path for the routes. while making the one with minimum average angle boldest
     {
         
             for index in 0..<routes.count
@@ -233,27 +243,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 let path = GMSPath.init(fromEncodedPath: points!)
                 let polyline = GMSPolyline.init(path: path)
                 if index == minIndex {
-                polyline.strokeWidth = 30
+                polyline.strokeWidth = 20
                 } else {
-                polyline.strokeWidth = 10
+                polyline.strokeWidth = 7
                 }
                 polyline.strokeColor = .random()
                 polyline.map = self.myMapView
             }
     }
     
-    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double, completion: @escaping (Double) -> Void) {
+    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double) -> Double {
         
-        //APIKEY AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg
+        //calculates the angle (in radians) between a step and the surface
         
         let origin = "\(segmentStart.latitude),\(segmentStart.longitude)"
         let destination = "\(segmentEnd.latitude),\(segmentEnd.longitude)"
         var originElevation = 0.0
         var destinationElevation = 0.0
+        var angle = 0.0
         let myoriginurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(origin)&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
         Alamofire.request(myoriginurl).responseJSON { response in
     
             let json = JSON(data: response.data!)
+            print(json)
             originElevation = json["results"][0]["elevation"].doubleValue
             print(originElevation)
         }
@@ -261,21 +273,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         Alamofire.request(mydestinationurl).responseJSON { response in
             
             let json = JSON(data: response.data!)
+            print(json)
             destinationElevation = json["results"][0]["elevation"].doubleValue
             print(destinationElevation)
             print("I will work")
-            let elevationDifference = abs(destinationElevation-originElevation)
-            let angle = acos(elevationDifference/distance)
-            completion(angle)
-        }
+            }
+        let elevationDifference = abs(destinationElevation-originElevation)
+        let ratio  = elevationDifference/distance
+        angle = acos(ratio)
+        return angle
     }
     
-    func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double {
+    func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double { //calculates the average angle
         var average: Double = 0
         for index in 0..<angles.count {
             average += angles[index]*weights[index]
         }
         return average
+    }
+    
+    func giveAlert (title: String, message: String, actionTitle: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: actionTitle, style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
 }
@@ -305,18 +325,13 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
         marker.snippet = finalPlace?.formattedAddress
         marker.map = myMapView
         
-        //delete the choosedestination button
-        
-        //chooseDestinationButton.isHidden = true
-        
-       // chooseDestinationButton.isUserInteractionEnabled = false
-        
-        
         //show button
         
         
         navigatorButton.isUserInteractionEnabled = true
         navigatorButton.isHidden = false
+        
+        //change the text of button allowing user to choose another destination
         
         self.chooseDestinationButton.setTitle("Choose Another Destination", for: .normal)
         self.chooseDestinationButton.titleLabel?.adjustsFontSizeToFitWidth = true
@@ -350,13 +365,13 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
     
 }
 
-extension CGFloat {
+extension CGFloat { //random function for CGFloat
     static func random() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UInt32.max)
     }
 }
 
-extension UIColor {
+extension UIColor { //gets random color
     static func random() -> UIColor {
         return UIColor(red:   .random(),
                        green: .random(),
@@ -365,7 +380,6 @@ extension UIColor {
     }
 }
 
-//MARK: - Helper functions
 
 
 
