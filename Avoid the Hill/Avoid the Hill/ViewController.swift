@@ -83,6 +83,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = manager.location {
+            let myLongitude = location.coordinate.longitude
+            let myLatitude = location.coordinate.latitude
+            let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
+            startingLocation = currentLocation
+        }
+    }
+    
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         //this works for both cases however for the phone, the same location is set twice. Since after launching the app in simulator, we ask for authorization, this should change everything properly.
@@ -119,12 +128,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {
         
-//        firstTap = false
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self as GMSAutocompleteViewControllerDelegate
-        present(autocompleteController, animated: true) { 
+        present(autocompleteController, animated: true) {
         }
-//        present(autocompleteController, animated: true, completion: nil)
     }
     
     
@@ -132,7 +139,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         
         self.myMapView.clear()
         
-        drawPath(startLocation: startingLocation!, endLocation: endingLocation!)
+        //drawPath(startLocation: startingLocation!, endLocation: endingLocation!)
+        myMapView.animate(toLocation: endingLocation!)
     
     }
     
@@ -160,8 +168,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             print(response.result as Any)   // result of response serialization
             
             let json = JSON(data: response.data!)
+            print(json)
             let routes = json["routes"].arrayValue
             
+//            for route in routes {
+//            }
+//            
             // print route using Polyline
             for route in routes
             {
@@ -176,7 +188,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             
         }
     }
-    
 }
 
 
