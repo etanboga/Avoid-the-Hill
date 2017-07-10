@@ -244,10 +244,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 let polyline = GMSPolyline.init(path: path)
                 if index == minIndex {
                 polyline.strokeWidth = 20
+                polyline.strokeColor = .green
                 } else {
                 polyline.strokeWidth = 7
-                }
                 polyline.strokeColor = .random()
+                }
+                
                 polyline.map = self.myMapView
             }
     }
