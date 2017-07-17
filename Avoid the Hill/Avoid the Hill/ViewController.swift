@@ -152,6 +152,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         let origin = "\(calculationStartLocation.latitude),\(calculationStartLocation.longitude)"
         let destination = "\(calculationEndLocation.latitude),\(calculationEndLocation.longitude)"
         
+        let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
+         activityIndicator.center = self.myMapView.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        activityIndicator.backgroundColor = UIColor.green
+        myMapView.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+        
         
         let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(origin)&destination=\(destination)&mode=walking&alternatives=true&key=AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE"
         
@@ -164,6 +172,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             let routes = json["routes"].arrayValue
             
             if routes.count == 0 {
+                activityIndicator.stopAnimating()
                 self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
             }
             
@@ -208,6 +217,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             }
             if let minimumAngle  = averageAngles.min() {
                 let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+                activityIndicator.stopAnimating()
                 //now we need to draw the routes making the one with smalest angle the boldest
                 self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
                 //completing navigation formatting
@@ -218,7 +228,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 marker.map = self.myMapView
 
             } else {
-                
+                activityIndicator.stopAnimating()
                 self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
             
             }

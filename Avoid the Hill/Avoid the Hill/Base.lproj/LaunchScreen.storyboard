@@ -27,33 +27,14 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pexels-photo-408503" translatesAutoresizingMaskIntoConstraints="NO" id="rzU-PM-ayQ">
-                                <rect key="frame" x="30" y="165" width="314" height="128"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="ngb-vH-OHY"/>
-                                </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Find the flattest route to your destination" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tTl-Re-8Dn">
-                                <rect key="frame" x="30" y="373" width="315" height="40"/>
-                                <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="20"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.18823529411764706" green="0.53269218494689552" blue="0.31764705882352939" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.48627450979999998" green="0.76862745099999996" blue="0.6705882353" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="tlJ-rg-url" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="9mL-8F-Tna"/>
-                            <constraint firstAttribute="trailing" secondItem="tTl-Re-8Dn" secondAttribute="trailing" constant="30" id="D3v-wM-j3f"/>
                             <constraint firstAttribute="trailing" secondItem="tlJ-rg-url" secondAttribute="trailing" constant="30" id="EcZ-nF-9zt"/>
-                            <constraint firstItem="tTl-Re-8Dn" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Ei1-zD-9HV"/>
                             <constraint firstItem="tlJ-rg-url" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="QoS-Fj-Alq"/>
                             <constraint firstItem="tlJ-rg-url" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="70" id="R6a-rq-gho"/>
-                            <constraint firstItem="tTl-Re-8Dn" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="30" id="SPJ-8J-LZc"/>
-                            <constraint firstItem="rzU-PM-ayQ" firstAttribute="top" secondItem="tlJ-rg-url" secondAttribute="bottom" constant="45" id="TxB-yh-Yxe"/>
-                            <constraint firstItem="rzU-PM-ayQ" firstAttribute="leading" secondItem="tlJ-rg-url" secondAttribute="leading" id="XO5-5N-lGv"/>
                             <constraint firstItem="tlJ-rg-url" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="30" id="jsd-pU-H5f"/>
-                            <constraint firstItem="tTl-Re-8Dn" firstAttribute="top" secondItem="rzU-PM-ayQ" secondAttribute="bottom" constant="80" id="sRC-Fe-Rwb"/>
-                            <constraint firstItem="rzU-PM-ayQ" firstAttribute="centerX" secondItem="tlJ-rg-url" secondAttribute="centerX" id="yEz-ZF-OjK"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -62,7 +43,4 @@
             <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="pexels-photo-408503" width="5400" height="3604"/>
-    </resources>
 </document>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="coz-BO-zE9">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uhG-EA-Y5U">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -89,6 +89,54 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="824" y="130.88455772113943"/>
+        </scene>
+        <!--Entry Screen View Controller-->
+        <scene sceneID="7zM-Gm-4Rj">
+            <objects>
+                <viewController id="uhG-EA-Y5U" customClass="EntryScreenViewController" customModule="Avoid_the_Hill" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="33Q-mW-eQY"/>
+                        <viewControllerLayoutGuide type="bottom" id="n0P-7N-1vV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="sOu-7c-Cgf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="14" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bbm-cA-pHG">
+                                <rect key="frame" x="30" y="253.5" width="315" height="160"/>
+                                <string key="text">Enter the destination you would like to go to. Press Take Me There to get different fast routes to the destination specified. The bold green route is the flattest route you can take</string>
+                                <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe right to continue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rs5-ia-Uv9">
+                                <rect key="frame" x="29" y="544" width="317.5" height="23"/>
+                                <fontDescription key="fontDescription" name="Courier-BoldOblique" family="Courier" pointSize="23"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.48627450979999998" green="0.76862745099999996" blue="0.6705882353" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Bbm-cA-pHG" secondAttribute="trailing" constant="30" id="NGu-8g-i1K"/>
+                            <constraint firstItem="Bbm-cA-pHG" firstAttribute="centerY" secondItem="sOu-7c-Cgf" secondAttribute="centerY" id="RAZ-jQ-URG"/>
+                            <constraint firstItem="rs5-ia-Uv9" firstAttribute="centerX" secondItem="sOu-7c-Cgf" secondAttribute="centerX" id="UZV-im-Rd5"/>
+                            <constraint firstItem="n0P-7N-1vV" firstAttribute="top" secondItem="rs5-ia-Uv9" secondAttribute="bottom" constant="100" id="eQy-n3-bpa"/>
+                            <constraint firstItem="Bbm-cA-pHG" firstAttribute="leading" secondItem="sOu-7c-Cgf" secondAttribute="leading" constant="30" id="y5T-jy-7xD"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="deB-Py-EJz" appends="YES" id="YEs-ah-fUY"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <segue destination="coz-BO-zE9" kind="show" identifier="goToMap" id="y94-DA-UIb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WMa-tR-fcC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="deB-Py-EJz"/>
+            </objects>
+            <point key="canvasLocation" x="-876" y="126.38680659670166"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LDC-Fg-vA4">
