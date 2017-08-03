@@ -35,7 +35,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBOutlet weak var myMapTopConstraint: NSLayoutConstraint!
     
-    
     let manager = CLLocationManager()
     var startingLocation : CLLocationCoordinate2D? = nil
     var endingLocation : CLLocationCoordinate2D? = nil
@@ -47,7 +46,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        //initial setup for layout
         
         chooseDestinationButton.layer.cornerRadius = CGFloat(CHOOSEDESTINATIONRADIUS)
         navigatorButton.layer.cornerRadius = CGFloat(NAVIGATORRADIUS)
@@ -61,8 +60,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         //get current location and show that location on the map
         
         if let location = manager.location {
-        let myLongitude = location.coordinate.longitude
-        let myLatitude = location.coordinate.latitude
+            let myLongitude = location.coordinate.longitude
+            let myLatitude = location.coordinate.latitude
             let camera = GMSCameraPosition.camera(withLatitude: myLatitude, longitude: myLongitude, zoom: 15)
             myMapView.camera = camera
             let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
@@ -191,20 +190,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                             for thirdindex in 0..<steps.count { //for each step
                                 
                                 //get start and end coordinates
+                                var elevationAngle = 0.0
                                 let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
                                 let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
                                 let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
                                 let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
+                                
                                 //get the distance between start and end in meters
                                 let distance  = steps[thirdindex]["distance"]["value"].doubleValue
                                 let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
                                 let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
-                                    //calculate the angle between the step and the sea level
-                                let elevationAngle = self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance)
-                                totalDistance += (distance)
-                                angleValues.append(elevationAngle)
-                                weights.append(distance)
-                                print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
+                                
+                                //calculate the angle between the step and the sea level
+                                self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (returnedAngle) in
+                                    elevationAngle = returnedAngle
+                                    totalDistance += (distance)
+                                    angleValues.append(elevationAngle)
+                                    weights.append(distance)
+                                    print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
+                                })
+                                
                             }
                     }
                     weights = weights.map {$0 / totalDistance}
@@ -264,7 +269,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             }
     }
     
-    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double) -> Double {
+    func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double, completion: @escaping (Double) -> (Void)) {
         
         //calculates the angle (in radians) between a step and the surface
         
@@ -289,11 +294,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             destinationElevation = json["results"][0]["elevation"].doubleValue
             print(destinationElevation)
             print("I will work")
+            let elevationDifference = abs(destinationElevation-originElevation)
+            let ratio  = elevationDifference/distance
+            angle = acos(ratio)
+            completion(angle)
             }
-        let elevationDifference = abs(destinationElevation-originElevation)
-        let ratio  = elevationDifference/distance
-        angle = acos(ratio)
-        return angle
     }
     
     func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double { //calculates the average angle
@@ -385,10 +390,15 @@ extension CGFloat { //random function for CGFloat
 
 extension UIColor { //gets random color
     static func random() -> UIColor {
-        return UIColor(red:   .random(),
-                       green: .random(),
-                       blue:  .random(),
-                       alpha: 1.0)
+        var randomcolor = UIColor(red:   .random(),
+                                  green: .random(),
+                                  blue:  .random(),
+                                  alpha: 1.0)
+        if randomcolor == UIColor.green {
+            randomcolor = random()
+        } else {
+        return randomcolor
+        }
     }
 }
 

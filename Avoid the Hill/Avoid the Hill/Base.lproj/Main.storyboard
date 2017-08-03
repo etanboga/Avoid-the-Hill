@@ -27,7 +27,7 @@
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r3u-wa-iaU">
                                 <rect key="frame" x="0.0" y="37" width="320" height="60"/>
-                                <color key="backgroundColor" red="0.1867335499265135" green="0.73604060913705582" blue="0.3189211950095332" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="backgroundColor" red="0.18823529411764706" green="0.73725490196078436" blue="0.31764705882352939" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="Quf-5F-147"/>
                                 </constraints>
