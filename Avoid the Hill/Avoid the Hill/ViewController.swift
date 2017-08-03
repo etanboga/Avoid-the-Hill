@@ -108,7 +108,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
                 myMapView.isMyLocationEnabled = true
                 startingLocation = currentLocation
-                //print("Information about starting location: \(startingLocation?.latitude ?? 0)   \( startingLocation?.longitude ?? 0)")
             }
             
             manager.startUpdatingLocation()
@@ -207,6 +206,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                                     totalDistance += (distance)
                                     angleValues.append(elevationAngle)
                                     weights.append(distance)
+                                    //print("this is for step \(thirdindex)")
                                     print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
                                 })
                                 
@@ -297,6 +297,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             let elevationDifference = abs(destinationElevation-originElevation)
             let ratio  = elevationDifference/distance
             angle = acos(ratio)
+            print(angle)
             completion(angle)
             }
     }
@@ -396,9 +397,9 @@ extension UIColor { //gets random color
                                   alpha: 1.0)
         if randomcolor == UIColor.green {
             randomcolor = random()
-        } else {
-        return randomcolor
         }
+        
+        return randomcolor
     }
 }
 
