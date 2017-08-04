@@ -306,7 +306,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             print("I will work")
             let elevationDifference = abs(destinationElevation-originElevation)
             let ratio  = elevationDifference/distance
-            angle = acos(ratio)
+            angle = acos(ratio)*180/Double.pi
             print(angle)
             completion(angle)
         }

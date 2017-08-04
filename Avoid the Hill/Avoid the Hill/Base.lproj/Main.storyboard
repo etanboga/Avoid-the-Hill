@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -33,7 +34,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <state key="normal" title="Choose Final Destination">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" red="0.92156862750000001" green="0.96078431369999995" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="finalDestinationButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Ct-R0-gfO"/>
@@ -48,7 +49,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="23"/>
                                 <state key="normal" title="Take me There!">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" red="0.92156862750000001" green="0.96078431369999995" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="navigatorButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ck9-tu-Wsq"/>
@@ -106,23 +107,32 @@
                                 <rect key="frame" x="30" y="253.5" width="315" height="160"/>
                                 <string key="text">Enter the destination you would like to go to. Press Take Me There to get different fast routes to the destination specified. The bold green route is the flattest route you can take</string>
                                 <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="20"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.92156862750000001" green="0.96078431369999995" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe right to continue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rs5-ia-Uv9">
                                 <rect key="frame" x="29" y="544" width="317.5" height="23"/>
                                 <fontDescription key="fontDescription" name="Courier-BoldOblique" family="Courier" pointSize="23"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.92156862750000001" green="0.96078431369999995" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avoid the Hill" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lJy-Lb-Lfp">
+                                <rect key="frame" x="16" y="153.5" width="343" height="30"/>
+                                <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="30"/>
+                                <color key="textColor" red="0.92156862750000001" green="0.96078431369999995" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="0.48627450979999998" green="0.76862745099999996" blue="0.6705882353" alpha="0.73606057359999999" colorSpace="custom" customColorSpace="displayP3"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="Bbm-cA-pHG" firstAttribute="top" secondItem="lJy-Lb-Lfp" secondAttribute="bottom" constant="70" id="0af-To-lCQ"/>
                             <constraint firstAttribute="trailing" secondItem="Bbm-cA-pHG" secondAttribute="trailing" constant="30" id="NGu-8g-i1K"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lJy-Lb-Lfp" secondAttribute="trailing" id="NqI-Fg-5L1"/>
                             <constraint firstItem="Bbm-cA-pHG" firstAttribute="centerY" secondItem="sOu-7c-Cgf" secondAttribute="centerY" id="RAZ-jQ-URG"/>
                             <constraint firstItem="rs5-ia-Uv9" firstAttribute="centerX" secondItem="sOu-7c-Cgf" secondAttribute="centerX" id="UZV-im-Rd5"/>
                             <constraint firstItem="n0P-7N-1vV" firstAttribute="top" secondItem="rs5-ia-Uv9" secondAttribute="bottom" constant="100" id="eQy-n3-bpa"/>
+                            <constraint firstItem="lJy-Lb-Lfp" firstAttribute="leading" secondItem="sOu-7c-Cgf" secondAttribute="leadingMargin" id="izw-7Q-Mfy"/>
                             <constraint firstItem="Bbm-cA-pHG" firstAttribute="leading" secondItem="sOu-7c-Cgf" secondAttribute="leading" constant="30" id="y5T-jy-7xD"/>
                         </constraints>
                         <connections>
