@@ -181,14 +181,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 var weights = [Double] ()       //records weights of steps for weighted average
                 var totalDistance = 0.0
                 let legs = routes[index]["legs"]    //get different legs for the route
-                var callCounter = 0
+                
+                //create counter variable to keep track of how many calls are pending in the step loop for each route
+                var stepCallCounter = 0
                 
                 for secondindex in 0..<legs.count {     //for each leg
                     
                     let steps = legs[secondindex]["steps"]  //get different steps
+                    
+                    //increase the route loop counter by 1, to show there are pending calls for the route
                     self.routesLoopCallCounter += 1
                     for thirdindex in 0..<steps.count { //for each step
-                        callCounter += 1
+                        //increase the counter for each step, so that counter only reaches 0 when all steps are finished
+                        stepCallCounter += 1
                         //get start and end coordinates
                         var elevationAngle = 0.0
                         let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
@@ -203,13 +208,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                         
                         //calculate the angle between the step and the sea level
                         self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (returnedAngle) in
+                            //add to total distance and append to angle and weight values
                             elevationAngle = returnedAngle
                             totalDistance += (distance)
                             angleValues.append(elevationAngle)
                             weights.append(distance)
                             
-                            callCounter -= 1
-                            if callCounter == 0 {
+                            //once a call returns from Alamofire, decrease the counter because that call is completed
+                            stepCallCounter -= 1
+                            //only execute the if statement when calls are finished for steps loop
+                            if stepCallCounter == 0 {
                                 
                                 weights = weights.map {$0 / totalDistance} //multiplier to make numbers bigger for better comparison
                                 print(weights) //check if division is complete
@@ -218,10 +226,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                                 
                                 let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
                                 averageAngles.append(averageAngle)
+                                
+                                //if this if statement is executed that means we are done for what we have to do for that route, therefore we can decrease the loop call counter
+                                
                                 self.routesLoopCallCounter -= 1
                                 
                             }
-                            //finds and draws the flattest route if it exists, if not gives an alert
+                            //finds and draws the flattest route if it exists, if not gives an alert, only executes if all route loops are executed using the counter
                             self.identifyFlattestRoute(averageAngles: averageAngles, routes: routes)
                         })
                         
@@ -293,6 +304,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         }
     }
     
+    //find the average angle using the angles and weights array for each route
+    
     func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double { //calculates the average angle
         var average: Double = 0
         for index in 0..<angles.count {
@@ -315,6 +328,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         myMapView.addSubview(activityIndicator)
         activityIndicator.startAnimating()
     }
+    
     func identifyFlattestRoute(averageAngles: [Double], routes: [JSON]) {
         if self.routesLoopCallCounter == 0 {
             if let minimumAngle  = averageAngles.min() {
