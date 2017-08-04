@@ -42,12 +42,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     var finalPlace: GMSPlace? = nil
     var routesLoopCallCounter = 0
     let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
+    var timer : Timer!
+    var isAlertPresent = false
     
     
     //MARK: - VC Lifecycle
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertNoInternet()
         
         //initial setup for layout
         
@@ -133,6 +137,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {   //leads to search bar
         
+        alertNoInternet()
+        
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self as GMSAutocompleteViewControllerDelegate
         present(autocompleteController, animated: true) {
@@ -141,6 +147,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     
     @IBAction func navigatorButtonTapped(_ sender: UIButton) {
+        
+        alertNoInternet()
         
         //initiating the navigation
         
@@ -350,6 +358,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             }
         }
     }
+    
+    func alertNoInternet() {
+        if !InternetConnectionHelper.connectedToNetwork() && !isAlertPresent {
+            let alert = UIAlertController(title: "No internet connection", message: "The connection was lost. Please check it and try again", preferredStyle: UIAlertControllerStyle.alert)
+            
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: {(action) in
+                alert.dismiss(animated: true, completion: nil)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
     
 }
 

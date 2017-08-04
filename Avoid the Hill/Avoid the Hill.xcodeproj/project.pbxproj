@@ -16,6 +16,7 @@
 		716A30B61F0BFFB100F045D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 716A30B41F0BFFB100F045D5 /* LaunchScreen.storyboard */; };
 		716A30C11F0C11D800F045D5 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 716A30C01F0C11D800F045D5 /* Podfile */; };
 		716A30C21F0C20D100F045D5 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716A30BE1F0C058900F045D5 /* CoreLocation.framework */; };
+		71D79D1D1F3509D400E61435 /* InternetConnectionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D79D1C1F3509D400E61435 /* InternetConnectionHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		716A30B71F0BFFB100F045D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		716A30BE1F0C058900F045D5 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		716A30C01F0C11D800F045D5 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		71D79D1C1F3509D400E61435 /* InternetConnectionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternetConnectionHelper.swift; sourceTree = "<group>"; };
 		87FF078262C18D6AF5DBE551 /* Pods_Avoid_the_Hill.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Avoid_the_Hill.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F458ED222F6A01EFB74F001C /* Pods-Avoid the Hill.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Avoid the Hill.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Avoid the Hill/Pods-Avoid the Hill.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,6 +78,7 @@
 				716A30B41F0BFFB100F045D5 /* LaunchScreen.storyboard */,
 				716A30B71F0BFFB100F045D5 /* Info.plist */,
 				710FCA4C1F1C67D100400D78 /* EntryScreenViewController.swift */,
+				71D79D1C1F3509D400E61435 /* InternetConnectionHelper.swift */,
 			);
 			path = "Avoid the Hill";
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			files = (
 				716A30AE1F0BFFB100F045D5 /* ViewController.swift in Sources */,
 				716A30AC1F0BFFB100F045D5 /* AppDelegate.swift in Sources */,
+				71D79D1D1F3509D400E61435 /* InternetConnectionHelper.swift in Sources */,
 				710FCA4D1F1C67D100400D78 /* EntryScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
