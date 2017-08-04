@@ -65,7 +65,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             let camera = GMSCameraPosition.camera(withLatitude: myLatitude, longitude: myLongitude, zoom: 15)
             myMapView.camera = camera
             let currentLocation = CLLocationCoordinate2DMake(myLatitude, myLongitude)
-  
+            
             
             myMapView.isMyLocationEnabled = true
             startingLocation = currentLocation
@@ -99,7 +99,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         //this works for both cases however for the phone, the same location is set twice. Since after launching the app in simulator, we ask for authorization, this should change everything properly.
         if status == .authorizedWhenInUse {
-
+            
             if let location = manager.location {
                 let myLongitude = location.coordinate.longitude
                 let myLatitude = location.coordinate.latitude
@@ -120,12 +120,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             manager.requestWhenInUseAuthorization()
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     //MARK: - IBActions
     
     @IBAction func finalDestinationButtonTapped(_ sender: UIButton) {   //leads to search bar
@@ -151,7 +151,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         let destination = "\(calculationEndLocation.latitude),\(calculationEndLocation.longitude)"
         
         let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
-         activityIndicator.center = self.myMapView.center
+        activityIndicator.center = self.myMapView.center
         activityIndicator.hidesWhenStopped = true
         activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
         activityIndicator.backgroundColor = UIColor.green
@@ -176,66 +176,79 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             
             var averageAngles = [Double] () //to store average angles corresponding to each route
             
-                for index in 0..<routes.count {     //for each route given
+            var biggerLoopCallCounter = 0
+            
+            for index in 0..<routes.count {     //for each route given
+                
+                var angleValues = [Double] ()   //records angle values of steps
+                var weights = [Double] ()       //records weights of steps for weighted average
+                var totalDistance = 0.0
+                let legs = routes[index]["legs"]    //get different legs for the route
+                var callCounter = 0
+                
+                for secondindex in 0..<legs.count {     //for each leg
                     
-                    var angleValues = [Double] ()   //records angle values of steps
-                    var weights = [Double] ()       //records weights of steps for weighted average
-                    var totalDistance = 0.0
-                    let legs = routes[index]["legs"]    //get different legs for the route
-                    
-                    for secondindex in 0..<legs.count {     //for each leg
-                        let steps = legs[secondindex]["steps"]  //get different steps
+                    let steps = legs[secondindex]["steps"]  //get different steps
+                    biggerLoopCallCounter += 1
+                    for thirdindex in 0..<steps.count { //for each step
+                        callCounter += 1
+                        //get start and end coordinates
+                        var elevationAngle = 0.0
+                        let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
+                        let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
+                        let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
+                        let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
                         
-                            for thirdindex in 0..<steps.count { //for each step
+                        //get the distance between start and end in meters
+                        let distance  = steps[thirdindex]["distance"]["value"].doubleValue
+                        let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
+                        let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
+                        
+                        //calculate the angle between the step and the sea level
+                        self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (returnedAngle) in
+                            elevationAngle = returnedAngle
+                            totalDistance += (distance)
+                            angleValues.append(elevationAngle)
+                            weights.append(distance)
+                            //print("this is for step \(thirdindex)")
+                            print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
+                            
+                            callCounter -= 1
+                            if callCounter == 0 {
                                 
-                                //get start and end coordinates
-                                var elevationAngle = 0.0
-                                let startLatitude = steps[thirdindex]["start_location"]["lat"].doubleValue
-                                let startLongitude = steps[thirdindex]["start_location"]["lng"].doubleValue
-                                let endLatitude = steps[thirdindex]["end_location"]["lat"].doubleValue
-                                let endLongitude = steps[thirdindex]["end_location"]["lng"].doubleValue
+                                weights = weights.map {$0 / totalDistance}
+                                print(weights) //check if division is complete
                                 
-                                //get the distance between start and end in meters
-                                let distance  = steps[thirdindex]["distance"]["value"].doubleValue
-                                let segmentStartCoordinate  = CLLocationCoordinate2DMake(startLatitude, startLongitude)
-                                let segmentEndCoordinate  = CLLocationCoordinate2DMake(endLatitude, endLongitude)
+                                //calculate average angle for the route and add it to the average angle array
                                 
-                                //calculate the angle between the step and the sea level
-                                self.calculateAngle(segmentStart: segmentStartCoordinate, segmentEnd: segmentEndCoordinate, distance: distance, completion: { (returnedAngle) in
-                                    elevationAngle = returnedAngle
-                                    totalDistance += (distance)
-                                    angleValues.append(elevationAngle)
-                                    weights.append(distance)
-                                    //print("this is for step \(thirdindex)")
-                                    print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
-                                })
+                                let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
+                                averageAngles.append(averageAngle)
+                                biggerLoopCallCounter -= 1
                                 
                             }
+                            if biggerLoopCallCounter == 0 {
+                                if let minimumAngle  = averageAngles.min() {
+                                    let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+                                    activityIndicator.stopAnimating()
+                                    //now we need to draw the routes making the one with smalest angle the boldest
+                                    self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
+                                    //completing navigation formatting
+                                    self.myMapView.animate(toLocation: self.endingLocation!)
+                                    let marker = GMSMarker(position: self.endingLocation!)
+                                    marker.title = self.finalPlace?.name
+                                    marker.snippet = self.finalPlace?.formattedAddress
+                                    marker.map = self.myMapView
+                                    
+                                } else {
+                                    activityIndicator.stopAnimating()
+                                    self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
+                                    
+                                }
+                            }
+                        })
+                        
                     }
-                    weights = weights.map {$0 / totalDistance}
-                    print(weights) //check if division is complete
-                    
-                    //calculate average angle for the route and add it to the average angle array
-                    
-                    let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
-                    averageAngles.append(averageAngle)
-            }
-            if let minimumAngle  = averageAngles.min() {
-                let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
-                activityIndicator.stopAnimating()
-                //now we need to draw the routes making the one with smalest angle the boldest
-                self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
-                //completing navigation formatting
-                self.myMapView.animate(toLocation: self.endingLocation!)
-                let marker = GMSMarker(position: self.endingLocation!)
-                marker.title = self.finalPlace?.name
-                marker.snippet = self.finalPlace?.formattedAddress
-                marker.map = self.myMapView
-
-            } else {
-                activityIndicator.stopAnimating()
-                self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
-            
+                }
             }
             
         }
@@ -251,22 +264,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     func drawPath( routes: [JSON], minIndex: Int)   //draws path for the routes. while making the one with minimum average angle boldest
     {
         
-            for index in 0..<routes.count
-            {
-                let routeOverviewPolyline = routes[index]["overview_polyline"].dictionary
-                let points = routeOverviewPolyline?["points"]?.stringValue
-                let path = GMSPath.init(fromEncodedPath: points!)
-                let polyline = GMSPolyline.init(path: path)
-                if index == minIndex {
+        for index in 0..<routes.count
+        {
+            let routeOverviewPolyline = routes[index]["overview_polyline"].dictionary
+            let points = routeOverviewPolyline?["points"]?.stringValue
+            let path = GMSPath.init(fromEncodedPath: points!)
+            let polyline = GMSPolyline.init(path: path)
+            if index == minIndex {
                 polyline.strokeWidth = 20
                 polyline.strokeColor = .green
-                } else {
+            } else {
                 polyline.strokeWidth = 7
                 polyline.strokeColor = .random()
-                }
-                
-                polyline.map = self.myMapView
             }
+            
+            polyline.map = self.myMapView
+        }
     }
     
     func calculateAngle(segmentStart: CLLocationCoordinate2D, segmentEnd: CLLocationCoordinate2D, distance: Double, completion: @escaping (Double) -> (Void)) {
@@ -280,7 +293,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         var angle = 0.0
         let myoriginurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(origin)&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
         Alamofire.request(myoriginurl).responseJSON { response in
-    
+            
             let json = JSON(data: response.data!)
             print(json)
             originElevation = json["results"][0]["elevation"].doubleValue
@@ -299,7 +312,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             angle = acos(ratio)
             print(angle)
             completion(angle)
-            }
+        }
     }
     
     func calculateAverageAngle(angles: [Double], weights: [Double]) -> Double { //calculates the average angle
@@ -325,7 +338,7 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
     
     // Handle the user's selection, can add button from here
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-
+        
         let finalDestination = CLLocationCoordinate2DMake(place.coordinate.latitude, place.coordinate.longitude)
         self.endingLocation = finalDestination
         
@@ -353,8 +366,8 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
         
         self.chooseDestinationButton.setTitle("Choose Another Destination", for: .normal)
         self.chooseDestinationButton.titleLabel?.adjustsFontSizeToFitWidth = true
-
-
+        
+        
         dismiss(animated: true, completion: nil)
         
         
@@ -373,7 +386,7 @@ extension ViewController: GMSAutocompleteViewControllerDelegate {
     // Turn the network activity indicator on and off again.
     func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
         
-
+        
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
     }
     
