@@ -40,6 +40,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     var endingLocation : CLLocationCoordinate2D? = nil
     
     var finalPlace: GMSPlace? = nil
+    var routesLoopCallCounter = 0
+    let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
+    
     
     //MARK: - VC Lifecycle
     
@@ -150,14 +153,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         let origin = "\(calculationStartLocation.latitude),\(calculationStartLocation.longitude)"
         let destination = "\(calculationEndLocation.latitude),\(calculationEndLocation.longitude)"
         
-        let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
-        activityIndicator.center = self.myMapView.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        activityIndicator.backgroundColor = UIColor.green
-        myMapView.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
         
+        //setup activity indicator to show the view is loading
+        
+        setupActivityIndicator()
         
         let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(origin)&destination=\(destination)&mode=walking&alternatives=true&key=AIzaSyD59ki59snUv-wXI8JJaZNWCsuEN4o69WE"
         
@@ -170,13 +169,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
             let routes = json["routes"].arrayValue
             
             if routes.count == 0 {
-                activityIndicator.stopAnimating()
+                self.activityIndicator.stopAnimating()
                 self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
             }
             
             var averageAngles = [Double] () //to store average angles corresponding to each route
-            
-            var biggerLoopCallCounter = 0
             
             for index in 0..<routes.count {     //for each route given
                 
@@ -189,7 +186,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                 for secondindex in 0..<legs.count {     //for each leg
                     
                     let steps = legs[secondindex]["steps"]  //get different steps
-                    biggerLoopCallCounter += 1
+                    self.routesLoopCallCounter += 1
                     for thirdindex in 0..<steps.count { //for each step
                         callCounter += 1
                         //get start and end coordinates
@@ -210,41 +207,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
                             totalDistance += (distance)
                             angleValues.append(elevationAngle)
                             weights.append(distance)
-                            //print("this is for step \(thirdindex)")
-                            print("The elevation angle is \(elevationAngle) for step \(thirdindex) for route \(index)")
                             
                             callCounter -= 1
                             if callCounter == 0 {
                                 
-                                weights = weights.map {$0 / totalDistance}
+                                weights = weights.map {$0 / totalDistance} //multiplier to make numbers bigger for better comparison
                                 print(weights) //check if division is complete
                                 
                                 //calculate average angle for the route and add it to the average angle array
                                 
                                 let averageAngle = self.calculateAverageAngle(angles: angleValues, weights: weights)
                                 averageAngles.append(averageAngle)
-                                biggerLoopCallCounter -= 1
+                                self.routesLoopCallCounter -= 1
                                 
                             }
-                            if biggerLoopCallCounter == 0 {
-                                if let minimumAngle  = averageAngles.min() {
-                                    let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
-                                    activityIndicator.stopAnimating()
-                                    //now we need to draw the routes making the one with smalest angle the boldest
-                                    self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
-                                    //completing navigation formatting
-                                    self.myMapView.animate(toLocation: self.endingLocation!)
-                                    let marker = GMSMarker(position: self.endingLocation!)
-                                    marker.title = self.finalPlace?.name
-                                    marker.snippet = self.finalPlace?.formattedAddress
-                                    marker.map = self.myMapView
-                                    
-                                } else {
-                                    activityIndicator.stopAnimating()
-                                    self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
-                                    
-                                }
-                            }
+                            //finds and draws the flattest route if it exists, if not gives an alert
+                            self.identifyFlattestRoute(averageAngles: averageAngles, routes: routes)
                         })
                         
                     }
@@ -327,6 +305,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: actionTitle, style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func setupActivityIndicator() {
+        activityIndicator.center = self.myMapView.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        activityIndicator.backgroundColor = UIColor.green
+        myMapView.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+    }
+    func identifyFlattestRoute(averageAngles: [Double], routes: [JSON]) {
+        if self.routesLoopCallCounter == 0 {
+            if let minimumAngle  = averageAngles.min() {
+                let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
+                self.activityIndicator.stopAnimating()
+                //now we need to draw the routes making the one with smalest angle the boldest
+                self.drawPath(routes: routes, minIndex: indexOfMinimumAngle!)
+                //completing navigation formatting
+                self.myMapView.animate(toLocation: self.endingLocation!)
+                let marker = GMSMarker(position: self.endingLocation!)
+                marker.title = self.finalPlace?.name
+                marker.snippet = self.finalPlace?.formattedAddress
+                marker.map = self.myMapView
+                
+            } else {
+                self.activityIndicator.stopAnimating()
+                self.giveAlert(title: "Invalid Destination", message: "You cannot walk to specified destination", actionTitle: "Choose Another Destination")
+                
+            }
+        }
     }
     
 }
