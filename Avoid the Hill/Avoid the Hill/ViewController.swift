@@ -44,6 +44,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     let activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
     var timer : Timer!
     var isAlertPresent = false
+    var calculationTimer: Timer!
     
     
     //MARK: - VC Lifecycle
@@ -260,7 +261,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
     
     func drawPath( routes: [JSON], minIndex: Int)   //draws path for the routes. while making the one with minimum average angle boldest
     {
-        
+        activityIndicator.stopAnimating()
         for index in 0..<routes.count
         {
             let routeOverviewPolyline = routes[index]["overview_polyline"].dictionary
@@ -292,21 +293,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         Alamofire.request(myoriginurl).responseJSON { response in
             
             let json = JSON(data: response.data!)
-            print(json)
             originElevation = json["results"][0]["elevation"].doubleValue
-            print(originElevation)
         }
         let mydestinationurl = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(destination)&key=AIzaSyCDnPJTbKCTuVPKJm4q_KCm0Fipz7d3Tfg"
         Alamofire.request(mydestinationurl).responseJSON { response in
             
             let json = JSON(data: response.data!)
-            print(json)
             destinationElevation = json["results"][0]["elevation"].doubleValue
-            print(destinationElevation)
-            print("I will work")
             let elevationDifference = abs(destinationElevation-originElevation)
             let ratio  = elevationDifference/distance
             angle = acos(ratio)*180/Double.pi
+            if angle.isNaN {
+                angle = 1
+            }
             print(angle)
             completion(angle)
         }
@@ -335,9 +334,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate  {
         activityIndicator.backgroundColor = UIColor.green
         myMapView.addSubview(activityIndicator)
         activityIndicator.startAnimating()
+        calculationTimer = Timer.scheduledTimer(timeInterval: 15, target: self, selector: #selector(alertLongCalculation), userInfo: nil, repeats: false)
+    }
+    
+    func alertLongCalculation() {
+        if activityIndicator.isAnimating {
+        giveAlert(title: "Calculation took too long", message: "Please pick a closer destination which you can walk in a comfortable way", actionTitle: "OK")
+        }
     }
     
     func identifyFlattestRoute(averageAngles: [Double], routes: [JSON]) {
+        
         if self.routesLoopCallCounter == 0 {
             if let minimumAngle  = averageAngles.min() {
                 let indexOfMinimumAngle = averageAngles.index(of: minimumAngle)
