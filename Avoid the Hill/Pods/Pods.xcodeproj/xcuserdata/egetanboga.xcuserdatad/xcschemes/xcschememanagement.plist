@@ -9,16 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>AlamofireImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>AlamofireNetworkActivityIndicator.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>GooglePlacesAPI.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -41,42 +31,6 @@
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>115FA0D867E07C04838493890DBD8D29</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>2698BC11F31A92D4BD15D32B9DA1DFC8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>88ACB4E8E0FCBA6305260D177DE18A26</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>88E9EC28B8B46C3631E6B242B50F4442</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9EFE4C70245EE2857D336B8B9FA4E825</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>A56D51C21C06FEA51D4ED1C79CF00DF7</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D82432A8B6F8DD4EE7EF779662BB6361</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 </dict>
 </plist>

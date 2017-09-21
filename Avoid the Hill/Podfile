@@ -5,8 +5,6 @@ target 'Avoid the Hill' do
 pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'GooglePlacesAPI'
-pod 'SwiftyJSON', :git => 'https://github.com/IBM-Swift/SwiftyJSON.git'
-pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git'
-pod 'AlamofireImage', :git => 'https://github.com/Alamofire/AlamofireImage.git'
-pod 'AlamofireNetworkActivityIndicator', :git => 'https://github.com/Alamofire/AlamofireNetworkActivityIndicator.git'
+pod 'SwiftyJSON'
+pod 'Alamofire', '~> 4.5'
 end
